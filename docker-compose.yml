@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - .env.backend
+    ports:
+      - "18080:8080"
+    networks:
+      - internal
+
+  frontend:
+    build: ./frontend
+    env_file:
+      - .env.frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - internal
+      - public
+
+networks:
+  internal:
+    driver: bridge
+    internal: true
+  public:
+    driver: bridge
