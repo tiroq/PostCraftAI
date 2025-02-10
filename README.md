@@ -1,10 +1,10 @@
 # PostCraft AI
 
-PostCraft AI is an intelligent service that transforms long-form articles into concise, engaging LinkedIn posts using OpenAI's API. It features robust JWT-based authentication, an admin panel for user management and request tracking, and per-user rate limiting to control API usage.
+PostCraft AI is an intelligent service that transforms long-form articles into concise, engaging posts using OpenAI's API. It features robust JWT-based authentication, an admin panel for user management and request tracking, and per-user rate limiting to control API usage.
 
 ## Features
 
-- **Article Transformation:** Convert detailed articles into polished, LinkedIn-ready posts.
+- **Article Transformation:** Convert detailed articles into polished, ready posts.
 - **JWT Authentication:** Secure signup, login, and role-based access (user/admin).
 - **Admin Panel:** Enable users with custom access expirations, update rate limits, and view detailed usage statistics.
 - **Rate Limiting:** Prevent abuse by limiting OpenAI API calls to a configurable number of requests per minute.
@@ -97,7 +97,7 @@ postcraft-ai/
 
   - `POST /signup`: Register a new user.
   - `POST /login`: Authenticate and receive a JWT token.
-  - `POST /generate-post`: Transform an article into a LinkedIn post (requires a valid JWT and enabled access).
+  - `POST /generate-post`: Transform an article into a post (requires a valid JWT and enabled access).
 
 - **Admin Endpoints (require admin JWT token):**
 

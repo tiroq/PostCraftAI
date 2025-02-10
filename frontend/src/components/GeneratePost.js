@@ -14,7 +14,7 @@ function GeneratePost({ token }) {
         { article },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setPost(res.data.linkedin_post);
+      setPost(res.data.post);
     } catch (err) {
       setError('Failed to generate post');
     }
@@ -22,7 +22,7 @@ function GeneratePost({ token }) {
 
   return (
     <div className="container">
-      <h2>Generate LinkedIn Post</h2>
+      <h2>Generate Post</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleGenerate}>
         <textarea

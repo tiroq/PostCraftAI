@@ -16,8 +16,6 @@ func main() {
 	// Use gin.Default() to include Logger and Recovery middleware.
 	r := gin.Default()
 
-	// Enable CORS if needed (or add the gin-contrib/cors middleware).
-
 	// Public endpoints.
 	r.POST("/signup", handlers.Signup)
 	r.POST("/login", handlers.Login)
@@ -26,7 +24,7 @@ func main() {
 	protected := r.Group("/")
 	protected.Use(handlers.AuthMiddleware())
 	{
-		protected.POST("/generate-post", handlers.GenerateLinkedInPost)
+		protected.POST("/generate-post", handlers.GeneratePost)
 		admin := protected.Group("/admin")
 		admin.Use(handlers.AdminMiddleware())
 		{

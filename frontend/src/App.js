@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import GeneratePost from './components/GeneratePost';
@@ -27,16 +28,19 @@ function App() {
   return (
     <Router>
       <div>
-        {token && (
-          <button onClick={handleLogout}>Logout</button>
-        )}
+        {token && <button onClick={handleLogout}>Logout</button>}
         <Routes>
+          <Route
+            path="/"
+            element={
+              !token ? <Home /> : (role === 'admin' ? <Navigate to="/admin" /> : <Navigate to="/dashboard" />)
+            }
+          />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/signup" element={<Signup onLogin={handleLogin} />} />
           <Route path="/generate-post" element={token ? <GeneratePost token={token} /> : <Navigate to="/login" />} />
           <Route path="/dashboard" element={token ? <UserDashboard token={token} /> : <Navigate to="/login" />} />
           <Route path="/admin" element={token && role === 'admin' ? <AdminDashboard token={token} /> : <Navigate to="/login" />} />
-          <Route path="/" element={token ? (role === 'admin' ? <Navigate to="/admin" /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>

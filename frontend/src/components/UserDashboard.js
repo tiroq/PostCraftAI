@@ -17,7 +17,7 @@ function UserDashboard({ token }) {
       <p>
         <Link to="/generate-post">Go to Generate Post Form</Link>
       </p>
-      <p>Example cURL command to generate a LinkedIn post:</p>
+      <p>Example cURL command to generate a post:</p>
       <pre>{exampleCurl}</pre>
     </div>
   );

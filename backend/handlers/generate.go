@@ -9,27 +9,26 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/tiroq/postcraftai/backend/models"
-
 	"github.com/gin-gonic/gin"
+	"github.com/tiroq/postcraftai/backend/models"
 )
 
-// GenerateLinkedInPost calls the OpenAI API, enforcing rate limiting and logging.
-func GenerateLinkedInPost(c *gin.Context) {
+// GeneratePost calls the OpenAI API, enforcing rate limiting and logging.
+func GeneratePost(c *gin.Context) {
 	username := c.GetString("username")
 	user, exists := models.Users[username]
 	if !exists || !user.Allowed {
-		log.Printf("GenerateLinkedInPost: unauthorized access attempt by %s", username)
+		log.Printf("GeneratePost: unauthorized access attempt by %s", username)
 		c.JSON(http.StatusForbidden, gin.H{"error": "User not enabled"})
 		return
 	}
 	if time.Now().After(user.AccessExpiresAt) {
-		log.Printf("GenerateLinkedInPost: access expired for user %s", username)
+		log.Printf("GeneratePost: access expired for user %s", username)
 		c.JSON(http.StatusForbidden, gin.H{"error": "User access expired"})
 		return
 	}
 	if !models.RateLimiterInstance.Allow(username, models.OpenAIRateLimit) {
-		log.Printf("GenerateLinkedInPost: rate limit exceeded for user %s", username)
+		log.Printf("GeneratePost: rate limit exceeded for user %s", username)
 		c.JSON(http.StatusTooManyRequests, gin.H{"error": fmt.Sprintf("Rate limit exceeded (max %d req/min)", models.OpenAIRateLimit)})
 		return
 	}
@@ -38,13 +37,13 @@ func GenerateLinkedInPost(c *gin.Context) {
 		Article string `json:"article"`
 	}
 	if err := c.BindJSON(&reqData); err != nil {
-		log.Printf("GenerateLinkedInPost: bind error for user %s: %v", username, err)
+		log.Printf("GeneratePost: bind error for user %s: %v", username, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 
-	prompt := fmt.Sprintf(`Transform the following article into a LinkedIn post.
-Start with a hook, summarize key insights in 2-3 short paragraphs, and include a call-to-action.
+	prompt := fmt.Sprintf(`Transform the following article into a short post.
+Start with an engaging hook and summarize the key points succinctly.
 
 Article:
 %s`, reqData.Article)
@@ -59,13 +58,13 @@ Article:
 	apiKey := models.GetenvOrFail("OPENAI_API_KEY")
 	responseText, err := callOpenAI(apiKey, openAIReq)
 	if err != nil {
-		log.Printf("GenerateLinkedInPost: OpenAI call failed for user %s: %v", username, err)
+		log.Printf("GeneratePost: OpenAI call failed for user %s: %v", username, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate post"})
 		return
 	}
 	models.LogRequest(username)
-	log.Printf("GenerateLinkedInPost: post generated for user %s", username)
-	c.JSON(http.StatusOK, gin.H{"linkedin_post": responseText})
+	log.Printf("GeneratePost: post generated for user %s", username)
+	c.JSON(http.StatusOK, gin.H{"post": responseText})
 }
 
 func callOpenAI(apiKey string, request models.OpenAIRequest) (string, error) {
